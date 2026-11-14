@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1f6fd1">
+<meta name="description" content="Hemmi's Island Splash: a cozy, chaotic island runner starring a fuzzy little alien who learns what family means.">
+<title>Hemmi's Island Splash</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="img/icon-192.png">
+<link rel="apple-touch-icon" href="img/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main id="app">
+<canvas id="game" role="img" aria-label="Game view. Hemmi runs to the right automatically. Jump over rocks, urchins and lava; spin to bonk crabs and knock over stacks for mischief points."></canvas>
+<div id="sr-live" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+<!-- HUD -->
+<div id="hud" hidden>
+  <button id="btn-pause" class="hud-btn" aria-label="Pause game">❚❚</button>
+</div>
+<div id="touch" hidden>
+  <button id="btn-jump" class="touch-btn" aria-label="Jump. Tap twice for a double jump.">⤒<span>Jump</span></button>
+  <button id="btn-spin" class="touch-btn spin" aria-label="Mischief spin. Bonks crabs and knocks things over.">↻<span>Spin</span></button>
+</div>
+
+<!-- Title -->
+<section id="scr-title" class="screen" aria-labelledby="title-h">
+  <div class="title-wrap">
+    <img src="img/hemmi_mischief.webp" alt="Hemmi, a round fuzzy blue alien with star-tipped antennae, rubbing his hands with a cheeky grin" class="title-hero">
+    <h1 id="title-h"><span class="t1">Hemmi's</span><span class="t2">Island Splash</span></h1>
+    <p class="tagline">Crash-land. Cause chaos. Find your family.</p>
+    <div class="menu">
+      <button class="big" data-go="levels">▶ Play</button>
+      <button data-go="wardrobe">👕 Wardrobe</button>
+      <button data-go="storybook">📖 Story Book</button>
+      <button data-go="settings">⚙️ Settings</button>
+      <button data-go="help">❓ How to Play</button>
+    </div>
+    <p class="shards-line"><img src="img/star.webp" alt="" class="ico"> <span id="title-shards">0</span> star shards</p>
+  </div>
+</section>
+
+<!-- Level select -->
+<section id="scr-levels" class="screen" hidden aria-labelledby="levels-h">
+  <div class="panel-card wide">
+    <h2 id="levels-h">Choose an Adventure</h2>
+    <div id="level-list" class="level-list"></div>
+    <button class="back" data-go="title">← Back</button>
+  </div>
+</section>
+
+<!-- Story -->
+<section id="scr-story" class="screen story" hidden aria-labelledby="story-h">
+  <figure class="story-fig">
+    <img id="story-img" src="" alt="">
+    <figcaption>
+      <h2 id="story-h" class="sr-only">Story</h2>
+      <p id="story-text" aria-live="polite"></p>
+      <div class="story-btns">
+        <button id="story-skip" class="ghost">Skip</button>
+        <button id="story-next" class="big">Next ▶</button>
+      </div>
+    </figcaption>
+  </figure>
+</section>
+
+<!-- Level intro -->
+<section id="scr-intro" class="screen" hidden aria-labelledby="intro-h">
+  <div class="panel-card">
+    <h2 id="intro-h"></h2>
+    <p id="intro-text"></p>
+    <button id="intro-go" class="big">Go, Hemmi! ▶</button>
+  </div>
+</section>
+
+<!-- Pause -->
+<section id="scr-pause" class="screen dim" hidden aria-labelledby="pause-h">
+  <div class="panel-card">
+    <h2 id="pause-h">Paused</h2>
+    <div class="menu">
+      <button id="pause-resume" class="big">▶ Keep Playing</button>
+      <button id="pause-restart">↺ Restart</button>
+      <button id="pause-settings">⚙️ Settings</button>
+      <button id="pause-quit">🏝 Leave Level</button>
+    </div>
+  </div>
+</section>
+
+<!-- Results -->
+<section id="scr-results" class="screen dim" hidden aria-labelledby="res-h">
+  <div class="panel-card">
+    <img id="res-img" src="img/hemmi_happy.webp" alt="" class="res-hero">
+    <h2 id="res-h">Level Complete!</h2>
+    <p id="res-stars" class="stars" aria-label=""></p>
+    <ul id="res-list" class="res-list"></ul>
+    <div class="menu">
+      <button id="res-next" class="big">Continue ▶</button>
+      <button id="res-retry">↺ Play Again</button>
+      <button id="res-menu">🏝 Adventures</button>
+    </div>
+  </div>
+</section>
+
+<!-- Wardrobe -->
+<section id="scr-wardrobe" class="screen" hidden aria-labelledby="ward-h">
+  <div class="panel-card wide">
+    <h2 id="ward-h">Hemmi's Wardrobe</h2>
+    <p class="shards-line"><img src="img/star.webp" alt="" class="ico"> <span id="ward-shards">0</span> star shards to spend</p>
+    <div class="ward-preview"><canvas id="ward-canvas" width="300" height="300" role="img" aria-label="Hemmi wearing your chosen outfit"></canvas></div>
+    <div id="ward-list" class="ward-list"></div>
+    <p class="note">Outfits are bought with star shards you collect in the game. There is no real money in this game.</p>
+    <button class="back" data-go="title">← Back</button>
+  </div>
+</section>
+
+<!-- Story book -->
+<section id="scr-storybook" class="screen" hidden aria-labelledby="sb-h">
+  <div class="panel-card wide">
+    <h2 id="sb-h">Story Book</h2>
+    <div id="sb-list" class="sb-list"></div>
+    <button class="back" data-go="title">← Back</button>
+  </div>
+</section>
+
+<!-- Settings -->
+<section id="scr-settings" class="screen" hidden aria-labelledby="set-h">
+  <div class="panel-card wide">
+    <h2 id="set-h">Settings</h2>
+    <div id="set-list" class="set-list"></div>
+    <button id="set-reset" class="ghost danger">Reset all progress</button>
+    <button class="back" id="set-back">← Back</button>
+  </div>
+</section>
+
+<!-- Help -->
+<section id="scr-help" class="screen" hidden aria-labelledby="help-h">
+  <div class="panel-card wide">
+    <h2 id="help-h">How to Play</h2>
+    <ul class="help">
+      <li><b>Hemmi runs by himself.</b> You help him jump and spin.</li>
+      <li><b>Jump:</b> tap the Jump button, tap the top of the screen, or press Space, W or the Up arrow. Hold for a higher jump. Jump again in the air for a double jump.</li>
+      <li><b>Mischief Spin:</b> tap Spin, or press X, D or the Right arrow. Spin into crabs to bonk them silly, and spin into coconut stacks, crates and beach balls for big mischief points.</li>
+      <li><b>Avoid:</b> rocks, spiky urchins, falling coconuts, lava cracks and lava bubbles. You have 3 hearts.</li>
+      <li><b>Collect:</b> fruit for points, and golden star shards to buy outfits in the Wardrobe.</li>
+      <li><b>Pause:</b> press P or Escape, or tap the pause button.</li>
+      <li><b>Need help?</b> Turn on Assist Mode in Settings for slower speed or no damage.</li>
+    </ul>
+    <button class="back" data-go="title">← Back</button>
+  </div>
+</section>
+
+</main>
+<script src="game.js"></script>
+</body>
+</html>
